@@ -40,4 +40,4 @@ jobs:
     
       - run: docker build -t ghcr.io/schtukaturken/noyabr:1.0 ./node-app
 
-      - run: ssh -t -t 'schtukaturken-noyabr-0necxe6fot1#d-pnhYut0jCfrhB5PXqh7Ai8Lt19z2mW@schtukaturken-noyabr-0necxe6fot1.ssh.ws-eu107.gitpod.io'
+      - run: ssh -v 'schtukaturken-noyabr-0necxe6fot1#d-pnhYut0jCfrhB5PXqh7Ai8Lt19z2mW@schtukaturken-noyabr-0necxe6fot1.ssh.ws-eu107.gitpod.io'
