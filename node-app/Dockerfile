@@ -2,6 +2,62 @@ FROM node:latest
 
 WORKDIR /app
 
-COPY node.js package.json . 
+COPY . .
 
 ENTRYPOINT ["node", "node.js"]
+
+—————————————————-
+2. python-app/Dockerfile
+
+FROM python:latest
+
+WORKDIR /app
+
+COPY main.py .
+
+ENTRYPOINT ["python", "main.py"]
+
+—————————————————
+3. main.yml
+
+name: CI
+
+on: [push]
+
+jobs:
+  push_to_registry:
+    name: docker python
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - run: docker build -t ghcr.io/schtukaturken/noyabr:1.0 ./python-app
+      
+  docker_node:
+    needs: [push_to_registry]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+    
+      - name: Change directory to node-app
+        run: cd ./node-app
+    
+      - name: Install Node.js dependencies
+        run: npm install node
+    
+      - name: docker node
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+    
+      - run: docker build -t ghcr.io/schtukaturken/noyabr:1.0 ./node-app
